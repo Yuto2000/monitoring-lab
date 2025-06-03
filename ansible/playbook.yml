@@ -1,0 +1,36 @@
+---
+- name: Monitoring Lab Setup
+  hosts: monitoring
+  become: yes
+  gather_facts: yes
+  
+  pre_tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+      tags: always
+    
+    - name: Install common packages
+      apt:
+        name:
+          - curl
+          - wget
+          - htop
+          - net-tools
+          - unzip
+        state: present
+      tags: always
+
+  roles:
+    - prometheus
+    - grafana
+
+  post_tasks:
+    - name: Display service status
+      debug:
+        msg: |
+          Setup completed!
+          - Prometheus: http://localhost:9090
+          - Grafana: http://localhost:3000 (admin/admin)
+          - Node Exporter: http://localhost:9100/metrics

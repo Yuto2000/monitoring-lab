@@ -1,0 +1,68 @@
+---
+- name: Add Grafana GPG key
+  apt_key:
+    url: https://apt.grafana.com/gpg.key
+    state: present
+
+- name: Add Grafana repository
+  apt_repository:
+    repo: "deb https://apt.grafana.com stable main"
+    state: present
+    update_cache: yes
+
+- name: Install Grafana
+  apt:
+    name: grafana
+    state: present
+    update_cache: yes
+
+- name: Create Grafana configuration
+  template:
+    src: grafana.ini.j2
+    dest: /etc/grafana/grafana.ini
+    owner: grafana
+    group: grafana
+    mode: '0640'
+  notify: restart grafana
+
+- name: Start and enable Grafana service
+  systemd:
+    name: grafana-server
+    state: started
+    enabled: yes
+    daemon_reload: yes
+
+- name: Wait for Grafana to start
+  wait_for:
+    port: "{{ grafana_port }}"
+    host: "{{ grafana_domain }}"
+    delay: 10
+    timeout: 60
+
+- name: Check if Prometheus datasource exists
+  uri:
+    url: "http://{{ grafana_domain }}:{{ grafana_port }}/api/datasources/name/{{ grafana_datasource_name }}"
+    method: GET
+    user: "{{ grafana_admin_user }}"
+    password: "{{ grafana_admin_password }}"
+    force_basic_auth: yes
+    status_code: [200, 404]
+  register: datasource_check
+  ignore_errors: yes
+
+- name: Create Prometheus datasource
+  uri:
+    url: "http://{{ grafana_domain }}:{{ grafana_port }}/api/datasources"
+    method: POST
+    user: "{{ grafana_admin_user }}"
+    password: "{{ grafana_admin_password }}"
+    force_basic_auth: yes
+    body_format: json
+    body:
+      name: "{{ grafana_datasource_name }}"
+      type: "prometheus"
+      url: "{{ grafana_datasource_url }}"
+      access: "proxy"
+      isDefault: true
+    status_code: 200
+  when: datasource_check.status == 404

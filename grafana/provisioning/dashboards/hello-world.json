@@ -1,0 +1,77 @@
+{
+    "dashboard": {
+        "id": null,
+        "title": "Hello World Monitoring",
+        "description": "Simple monitoring dashboard for the tutorial",
+        "tags": [
+            "hello-world",
+            "tutorial"
+        ],
+        "timezone": "browser",
+        "panels": [
+            {
+                "id": 1,
+                "title": "Services Up Status",
+                "type": "stat",
+                "targets": [
+                    {
+                        "expr": "up",
+                        "refId": "A"
+                    }
+                ],
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "palette-classic"
+                        },
+                        "custom": {
+                            "displayMode": "list",
+                            "orientation": "horizontal"
+                        },
+                        "mappings": [],
+                        "thresholds": {
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 0
+                                }
+                            ]
+                        }
+                    }
+                },
+                "gridPos": {
+                    "h": 8,
+                    "w": 12,
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            {
+                "id": 2,
+                "title": "CPU Usage",
+                "type": "graph",
+                "targets": [
+                    {
+                        "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+                        "refId": "A"
+                    }
+                ],
+                "gridPos": {
+                    "h": 8,
+                    "w": 12,
+                    "x": 12,
+                    "y": 0
+                }
+            }
+        ],
+        "time": {
+            "from": "now-5m",
+            "to": "now"
+        },
+        "refresh": "5s"
+    }
+}

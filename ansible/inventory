@@ -1,0 +1,7 @@
+[monitoring]
+127.0.0.1 ansible_connection=local
+
+[monitoring:vars]
+ansible_user=vagrant
+ansible_become=yes
+ansible_become_method=sudo
