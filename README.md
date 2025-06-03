@@ -2,6 +2,9 @@
 
 MacBook Pro M3でPrometheus + Grafanaの監視環境を構築するチュートリアル
 
+<img width="1512" alt="スクリーンショット 2025-06-03 15 23 44" src="https://github.com/user-attachments/assets/c36b7584-5aab-4257-b390-e1c87621298e" />
+<img width="1512" alt="スクリーンショット 2025-06-03 15 24 08" src="https://github.com/user-attachments/assets/6ff167c1-9a64-4206-a604-c42aafe36690" />
+
 ## 🐳 Docker Compose版（推奨）
 
 ### 前提条件
