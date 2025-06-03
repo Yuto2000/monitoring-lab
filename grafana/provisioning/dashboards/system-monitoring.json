@@ -1,0 +1,122 @@
+{
+    "id": null,
+    "title": "System Monitoring Dashboard",
+    "description": "Detailed system monitoring with CPU, Memory, Disk, Network",
+    "tags": [
+        "monitoring",
+        "system"
+    ],
+    "timezone": "browser",
+    "panels": [
+        {
+            "id": 1,
+            "title": "CPU Usage by Core",
+            "type": "timeseries",
+            "targets": [
+                {
+                    "expr": "100 - (avg by (instance, cpu) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+                    "legendFormat": "CPU {{cpu}} - {{instance}}",
+                    "refId": "A"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "percent",
+                    "min": 0,
+                    "max": 100
+                }
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "id": 2,
+            "title": "Memory Usage",
+            "type": "timeseries",
+            "targets": [
+                {
+                    "expr": "100 * (1 - ((node_memory_MemAvailable_bytes) / (node_memory_MemTotal_bytes)))",
+                    "legendFormat": "Memory Usage %",
+                    "refId": "A"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "percent",
+                    "min": 0,
+                    "max": 100
+                }
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 0
+            }
+        },
+        {
+            "id": 3,
+            "title": "Disk Usage",
+            "type": "timeseries",
+            "targets": [
+                {
+                    "expr": "100 - ((node_filesystem_avail_bytes{mountpoint=\"/\"} * 100) / node_filesystem_size_bytes{mountpoint=\"/\"})",
+                    "legendFormat": "Disk Usage %",
+                    "refId": "A"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "percent",
+                    "min": 0,
+                    "max": 100
+                }
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 8
+            }
+        },
+        {
+            "id": 4,
+            "title": "Network Traffic",
+            "type": "timeseries",
+            "targets": [
+                {
+                    "expr": "rate(node_network_receive_bytes_total{device!=\"lo\"}[5m])",
+                    "legendFormat": "Received - {{device}}",
+                    "refId": "A"
+                },
+                {
+                    "expr": "rate(node_network_transmit_bytes_total{device!=\"lo\"}[5m])",
+                    "legendFormat": "Transmitted - {{device}}",
+                    "refId": "B"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "Bps"
+                }
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 8
+            }
+        }
+    ],
+    "time": {
+        "from": "now-1h",
+        "to": "now"
+    },
+    "refresh": "5s",
+    "version": 1,
+    "uid": "system-monitoring-uid"
+}

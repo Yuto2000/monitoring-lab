@@ -56,6 +56,158 @@ vagrant up
 
 これでPrometheusから取得したサービス稼働状況がグラフ化されます！
 
+## 📊 Dashboard Testing & Verification
+
+### Access Monitoring Services
+
+After running `docker-compose up -d`, access the following services:
+
+- **Grafana Dashboard**: http://localhost:3000 (admin/admin)
+- **Prometheus**: http://localhost:9090
+- **Node Exporter**: http://localhost:9100/metrics
+- **cAdvisor**: http://localhost:8080
+- **Alertmanager**: http://localhost:9093
+
+### Pre-configured Dashboards
+
+1. **Hello World Monitoring Dashboard**
+   - **UID**: `hello-world`
+   - **Panels**:
+     - CPU Usage: Shows system CPU utilization over time
+     - Services Status: Displays which services are up/down
+     - Memory Usage: Memory consumption monitoring
+     - Container Network I/O: Network traffic for containers
+
+2. **Available Metrics**
+   - System metrics via Node Exporter
+   - Container metrics via cAdvisor
+   - Service availability monitoring
+   - Custom alert rules for critical thresholds
+
+### Dashboard Verification Steps
+
+1. **Login to Grafana**:
+   ```bash
+   open http://localhost:3000
+   # Login: admin/admin
+   ```
+
+2. **Verify Dashboard Loading**:
+   - Navigate to "Dashboards" → "Browse"
+   - Check for "Hello World Monitoring Dashboard"
+   - Verify all panels show data
+
+3. **Test Metrics Collection**:
+   ```bash
+   # Check Prometheus targets
+   open http://localhost:9090/targets
+
+   # Verify metrics are being scraped:
+   # - prometheus (self-monitoring)
+   # - node-exporter (system metrics)
+   # - grafana (application metrics)
+   # - cadvisor (container metrics)
+   ```
+
+4. **Alert Testing**:
+   - View configured alerts: http://localhost:9090/alerts
+   - Check Alertmanager: http://localhost:9093
+   - Alerts include: High CPU, High Memory, Low Disk, Service Down
+
+### Custom Dashboard Creation
+
+To create additional dashboards:
+
+1. Use Grafana UI to create new dashboards
+2. Export JSON configuration
+3. Place in `grafana/provisioning/dashboards/` directory
+4. Restart services with `docker-compose restart grafana`
+
+### Performance Monitoring
+
+The setup includes comprehensive monitoring with:
+- **5-second scrape intervals** for Prometheus and Node Exporter
+- **15-second intervals** for Grafana metrics
+- **30-second intervals** for cAdvisor (container metrics)
+- **Automatic alerting** for critical system conditions
+
+## 🎉 Hello World Tutorial Complete!
+
+### What We've Built
+
+This tutorial has successfully created a complete infrastructure monitoring solution using:
+
+**Core Technologies:**
+- ✅ **Vagrant + Ansible**: Infrastructure as Code setup
+- ✅ **Docker Compose**: Container orchestration alternative
+- ✅ **Prometheus**: Metrics collection and alerting
+- ✅ **Grafana**: Visualization and dashboards
+- ✅ **Node Exporter**: System metrics
+- ✅ **cAdvisor**: Container metrics
+- ✅ **Alertmanager**: Alert routing and management
+
+**Key Features Implemented:**
+- 🔄 **Multi-interval scraping** (5s-30s based on service type)
+- 🚨 **4 alert rules** (CPU, Memory, Disk, Service availability)
+- 📊 **Auto-provisioned dashboards** with real-time visualizations
+- 🐳 **Container monitoring** with detailed resource tracking
+- 🔔 **Webhook-based alerting** with severity levels
+- 💾 **Persistent data storage** for metrics and configurations
+
+### Quick Start Demo
+
+1. **Run the health check:**
+   ```bash
+   ./health-check.sh
+   ```
+
+2. **Open monitoring services:**
+   - Grafana: http://localhost:3000 (admin/admin)
+   - Prometheus: http://localhost:9090
+   - cAdvisor: http://localhost:8080
+
+3. **View the Hello World Dashboard:**
+   - Login to Grafana
+   - Navigate to "Hello World Monitoring Dashboard"
+   - Observe real-time metrics for CPU, Memory, Services, and Network
+
+### Advanced Usage
+
+**Add custom metrics:**
+```bash
+# Edit prometheus/prometheus.yml to add new scrape targets
+# Restart: docker-compose restart prometheus
+```
+
+**Create new dashboards:**
+```bash
+# Add JSON files to grafana/provisioning/dashboards/
+# Restart: docker-compose restart grafana
+```
+
+**Modify alert rules:**
+```bash
+# Edit prometheus/alert-rules.yml
+# Restart: docker-compose restart prometheus alertmanager
+```
+
+### Cleanup
+
+```bash
+# Stop all services
+docker-compose down
+
+# Remove volumes (optional)
+docker-compose down -v
+
+# For Vagrant cleanup
+vagrant destroy
+```
+
+---
+
+**🎓 Congratulations!** You've successfully built and deployed a production-ready monitoring infrastructure that can scale from development to enterprise environments.
+
 ## 🏗️ アーキテクチャ
 
 ```
